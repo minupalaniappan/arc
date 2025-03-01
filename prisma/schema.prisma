@@ -39,6 +39,4 @@ model PandemicOversightBusiness {
   jobsReported                  Int?
   gender                        String?
   race                          String?
-
-  @@unique([borrower, loanAmount, dateApproved, lenderName])
 }
