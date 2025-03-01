@@ -1,5 +1,5 @@
 {
-  "name": "examples-trpc-next-prisma-starter",
+  "name": "arc",
   "private": true,
   "scripts": {
     "generate": "prisma generate",
@@ -8,6 +8,7 @@
     "db-reset": "prisma migrate dev reset",
     "dx:next": "run-s migrate-dev db-seed && next dev",
     "dx:prisma-studio": "pnpm prisma-studio",
+    "studio": "pnpm dx:prisma-studio",
     "dx": "run-p dx:* --print-label",
     "dev": "pnpm dx:next",
     "prebuild": "run-s generate migrate",
@@ -15,12 +16,14 @@
     "start": "next start",
     "lint": "eslint --cache src",
     "lint-fix": "pnpm lint --fix",
-    "migrate-dev": "prisma migrate dev",
+    "format": "prettier --write .",
+    "migrate:dev": "prisma migrate dev",
     "migrate": "prisma migrate deploy",
     "test-unit": "vitest",
     "test-e2e": "playwright test",
     "test-start": "run-s test-unit test-e2e",
-    "postinstall": "pnpm generate"
+    "postinstall": "pnpm generate",
+    "execute": "tsx src/scripts/index.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -37,7 +40,13 @@
     "@trpc/next": "npm:@trpc/next@next",
     "@trpc/react-query": "npm:@trpc/react-query@next",
     "@trpc/server": "npm:@trpc/server@next",
+    "@types/fs-extra": "^11.0.4",
+    "@types/lodash": "^4.17.16",
     "clsx": "^2.0.0",
+    "csv-reader": "^1.0.12",
+    "fs-extra": "^11.3.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.30.1",
     "next": "^15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -10,14 +10,35 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Post {
-  id    String @id @default(uuid())
-  title String
-  text  String
+model PandemicOversightBusiness {
+  id                            String    @id @default(uuid())
+  borrower                      String
+  loanAmount                    Float?
+  amountForgiven                Float?
+  loanStatus                    String?
+  dateApproved                  DateTime?
+  dateForgiven                  DateTime?
+  payroll                       Float?
+  rent                          Float?
+  utilities                     Float?
+  healthCare                    Float?
+  mortageInterest               Float?
+  debtInterest                  Float?
+  refinancingEIDL               Float?
+  notProvided                   Float?
+  lenderName                    String?
+  businessType                  String?
+  industry                      String?
+  industryDetailed              String?
+  ageOfBusiness                 String?
+  borrowerCity                  String?
+  borrowerState                 String?
+  borrowerZip                   String?
+  borrowerCounty                String?
+  borrowerCongressionalDistrict Int?
+  jobsReported                  Int?
+  gender                        String?
+  race                          String?
 
-  // To return `Date`s intact through the API we use transformers
-  // https://trpc.io/docs/v11/data-transformers
-  // This is unique so it can be used for cursor-based pagination
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  @@unique([borrower, loanAmount, dateApproved, lenderName])
 }
