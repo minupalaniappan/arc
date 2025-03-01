@@ -9,8 +9,6 @@ moment.suppressDeprecationWarnings = true
 
 dotenv.config()
 
-console.info(process.env.DATABASE_URL, 'hello')
-
 const EXPORT_URL =
   'https://public.domo.com/embed/pages/qx5g7/cards/1676470585/export'
 
