@@ -1,22 +1,28 @@
-import { first } from 'lodash';
+import { first } from 'lodash'
 import {
   downloadPandemicOversightDataset,
   writePandemicOversightDatasetToDb,
-} from './downloadPandemicOversightDataset';
+} from './downloadPandemicOversightDataset'
+import { downloadGenericBizBuySell } from './downloadBizBuySell'
 
 const execute = async () => {
-  const command = first(process.argv.slice(2));
-  const verb = first(process.argv.slice(3));
+  const command = first(process.argv.slice(2))
+  const verb = first(process.argv.slice(3))
 
   switch (command) {
     case 'pandemicoversight':
       if (verb === 'read') {
-        await downloadPandemicOversightDataset();
+        await downloadPandemicOversightDataset()
       } else if (verb === 'write') {
-        await writePandemicOversightDatasetToDb();
+        await writePandemicOversightDatasetToDb()
       }
-      return;
+      return
+    case 'bizbuysell':
+      if (verb === 'read') {
+        await downloadGenericBizBuySell()
+      }
+      return
   }
-};
+}
 
-execute();
+execute()
