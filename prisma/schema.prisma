@@ -40,3 +40,18 @@ model PandemicOversightBusiness {
   gender                        String?
   race                          String?
 }
+
+model BizBuySellProduct {
+  id              String   @id @default(uuid())
+  name            String?
+  logo            String?
+  image           String?
+  description     String?
+  url             String?
+  productId       String   @unique
+  offerPrice      Float?
+  priceCurrency   String?
+  availability    Boolean?
+  addressLocality String?
+  addressRegion   String?
+}
