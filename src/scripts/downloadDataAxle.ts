@@ -54,12 +54,13 @@ const setMessage = async (message: string) => {
   await fetch('https://mathflow-tawny.vercel.app/api/set/count', {
     method: 'POST',
     body: JSON.stringify({
-      message,
+      count: message,
     }),
   })
     .then((res) => res.json())
+    .catch((error) => console.error(error))
     .then((data) => {
-      console.info(`Message emitted: ${JSON.stringify(data)}`)
+      console.info(data)
     })
 }
 
