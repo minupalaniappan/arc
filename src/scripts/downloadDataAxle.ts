@@ -50,6 +50,19 @@ export const fetchHeaders = (cookie: string, requestId: string) => {
   return myHeaders
 }
 
+const setMessage = async (message: string) => {
+  await fetch('https://mathflow-tawny.vercel.app/api/set/count', {
+    method: 'POST',
+    body: JSON.stringify({
+      message,
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.info(`Message emitted: ${JSON.stringify(data)}`)
+    })
+}
+
 export const downloadBaseAxelBusiness = async () => {
   const raw = (page: number, requestKey: string) =>
     `requestKey=${requestKey}&sort=&direction=Ascending&pageIndex=${page}&optionalColumn=`
@@ -59,6 +72,8 @@ export const downloadBaseAxelBusiness = async () => {
       pageNumber: 'desc',
     },
   })
+
+  await setMessage(`Starting page ${latestPage?.pageNumber ?? 0}`)
 
   const numbers = range((latestPage?.pageNumber ?? 0) + 1, TOTAL_PAGES)
   const chunks = chunk(numbers, 5)
@@ -70,8 +85,14 @@ export const downloadBaseAxelBusiness = async () => {
 
   console.info(`EXECUTING WITH COOKIE ${cookie} AND REQUEST KEY ${requestKey}`)
 
+  await setMessage(
+    `Executing with cookie ${cookie} and request key ${requestKey}`,
+  )
+
   for (const chunk of chunks) {
     console.info(`Starting chunk ${chunk[0]} to ${chunk[chunk.length - 1]}`)
+    await setMessage(`Starting chunk ${chunk[0]} to ${chunk[chunk.length - 1]}`)
+
     const results = await Promise.all(
       chunk.map(async (i) => {
         const requestOptions = {
@@ -124,6 +145,8 @@ export const downloadBaseAxelBusiness = async () => {
 
     console.info(`Results: ${results.flat().length}`)
 
+    await setMessage(`Results: ${results.flat().length}`)
+
     if (results.flat().length === 0) {
       const data = await downloadAxleBusinessCookie()
 
@@ -133,12 +156,20 @@ export const downloadBaseAxelBusiness = async () => {
       console.info(`Reloaded cookie ${cookie} and request key ${requestKey}`)
     } else {
       const records = await prisma.axleBusiness.createMany({
-        data: results.flat() as Prisma.AxleBusinessCreateManyInput[],
+        data: (results.flat() as Prisma.AxleBusinessCreateManyInput[]).filter(
+          (e) => !!e,
+        ),
       })
 
       console.info(`Saved ${records.count} records`)
 
+      await setMessage(`Saved ${records.count} records`)
+
       console.info(`Downloaded page ${chunk[0]} to ${chunk[chunk.length - 1]}`)
+
+      await setMessage(
+        `Downloaded page ${chunk[0]} to ${chunk[chunk.length - 1]}`,
+      )
 
       await prisma.axleBusinessPageSearched.createMany({
         data: chunk.map((i) => ({
@@ -146,7 +177,11 @@ export const downloadBaseAxelBusiness = async () => {
         })),
       })
 
-      console.info(`Saved page ${chunk[0]} to ${chunk[chunk.length - 1]}`)
+      const totalBusinesses = await prisma.axleBusiness.count()
+
+      console.info(`Total businesses: ${totalBusinesses}`)
+
+      await setMessage(`Total businesses: ${totalBusinesses}`)
 
       await new Promise((resolve) => setTimeout(resolve, 2000))
     }

@@ -76,7 +76,7 @@ router.addDefaultHandler(async ({ page }) => {
 
 const crawler = new PuppeteerCrawler({
   requestHandler: router,
-  headless: false,
+  headless: true,
   proxyConfiguration: new ProxyConfiguration({
     proxyUrls: [PROXY_URL],
   }),
