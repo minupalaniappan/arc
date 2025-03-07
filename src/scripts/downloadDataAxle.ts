@@ -53,6 +53,26 @@ export const fetchHeaders = (cookie: string, requestId: string) => {
 const setMessage = async (message: string) => {
   await fetch('https://mathflow-tawny.vercel.app/api/set/count', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      count: message,
+    }),
+  })
+    .then((res) => res.json())
+    .catch((error) => console.error(error))
+    .then((data) => {
+      console.info(data)
+    })
+}
+
+const setBusinessCount = async (message: string) => {
+  await fetch('https://mathflow-tawny.vercel.app/api/set/businessCount', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
       count: message,
     }),
@@ -183,6 +203,8 @@ export const downloadBaseAxelBusiness = async () => {
       console.info(`Total businesses: ${totalBusinesses}`)
 
       await setMessage(`Total businesses: ${totalBusinesses}`)
+
+      await setBusinessCount(totalBusinesses.toString())
 
       await new Promise((resolve) => setTimeout(resolve, 2000))
     }
