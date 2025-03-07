@@ -3,7 +3,11 @@ import {
   downloadPandemicOversightDataset,
   writePandemicOversightDatasetToDb,
 } from './downloadPandemicOversightDataset'
-import { downloadGenericBizBuySell } from './downloadBizBuySell'
+import {
+  downloadGenericBizBuySell,
+  downloadGenericBizBuySellDetail,
+} from './downloadBizBuySell'
+import { downloadBaseAxelBusiness } from './downloadDataAxle'
 
 const execute = async () => {
   const command = first(process.argv.slice(2))
@@ -18,9 +22,14 @@ const execute = async () => {
       }
       return
     case 'bizbuysell':
-      if (verb === 'read') {
-        await downloadGenericBizBuySell()
-      }
+      await downloadGenericBizBuySell()
+      return
+    case 'bizbuyselldetail':
+      await downloadGenericBizBuySellDetail()
+      return
+    case 'axelbase':
+      console.info('Downloading base axle business')
+      await downloadBaseAxelBusiness()
       return
   }
 }

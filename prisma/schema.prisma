@@ -42,16 +42,37 @@ model PandemicOversightBusiness {
 }
 
 model BizBuySellProduct {
-  id              String   @id @default(uuid())
+  id                String   @id @default(uuid())
+  name              String?
+  logo              String?
+  image             String?
+  description       String?
+  url               String?
+  productId         String   @unique
+  offerPrice        Float?
+  priceCurrency     String?
+  availability      Boolean?
+  addressLocality   String?
+  addressRegion     String?
+  rawFinancials     String?
+  rawListingDetails String?
+}
+
+model AxleBusiness {
+  id              String  @id @default(uuid())
   name            String?
-  logo            String?
-  image           String?
-  description     String?
-  url             String?
-  productId       String   @unique
-  offerPrice      Float?
-  priceCurrency   String?
-  availability    Boolean?
-  addressLocality String?
-  addressRegion   String?
+  executiveName   String?
+  streetAddress   String?
+  city            String?
+  state           String?
+  zip             String?
+  phone           String?
+  axelBusinessUrl String? @unique
+  axelBusinessId  String?
+  employeeSize    String?
+}
+
+model AxleBusinessPageSearched {
+  id         String @id @default(uuid())
+  pageNumber Int
 }

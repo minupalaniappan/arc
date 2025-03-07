@@ -1,5 +1,7 @@
 import * as cheerio from 'cheerio'
 import { prisma } from '../server/prisma'
+import { CheerioCrawler, Dataset } from 'crawlee'
+import { BizBuySellProduct } from '@prisma/client'
 
 const BASE_ENDPOINT_URL = 'https://www.bizbuysell.com/businesses-for-sale'
 const IN_STOCK_URL = 'http://schema.org/InStock'
@@ -110,4 +112,44 @@ export const downloadGenericBizBuySell = async () => {
 
     console.info(`Downloaded page ${i + 1} of ${totalPages}`)
   }
+}
+
+export const visitBizBuySellDetail = async (
+  bizProducts: BizBuySellProduct[],
+) => {
+  const crawler = new CheerioCrawler({
+    // Use the requestHandler to process each of the crawled pages.
+    async requestHandler({ request, log, $ }) {
+      log.info(`Visiting ${request.url}`)
+
+      const financials = $('.financials').text()
+      const listingDetails = $('.listingProfile_details').text()
+
+      await Dataset.pushData({
+        productId: request.userData.productId,
+        financials,
+        listingDetails,
+        url: request.url,
+      })
+    },
+    maxRequestsPerCrawl: 20,
+  })
+
+  // Add first URL to the queue and start the crawl.
+  await crawler.run(
+    bizProducts.map((e) => ({
+      url: e.url ?? '',
+      userData: {
+        productId: e.productId,
+      },
+    })),
+  )
+}
+
+export const downloadGenericBizBuySellDetail = async () => {
+  let records = await prisma.bizBuySellProduct.findMany()
+
+  records = records.filter((e) => e.url)
+
+  await visitBizBuySellDetail(records)
 }
