@@ -49,14 +49,23 @@ router.addDefaultHandler(async ({ page }) => {
 
   const requestId = tokens[tokens.length - 1]
 
+  await page.click('div.submitButton')
+
+  await page.waitForSelector('div#dbSelector', {
+    timeout: 10000,
+  })
+
   await Dataset.pushData({
     cookie,
     requestId,
   })
+
+  await new Promise((resolve) => setTimeout(resolve, 500))
 })
 
 const crawler = new PuppeteerCrawler({
   requestHandler: router,
+  headless: true,
   proxyConfiguration: new ProxyConfiguration({
     proxyUrls: [PROXY_URL],
   }),
