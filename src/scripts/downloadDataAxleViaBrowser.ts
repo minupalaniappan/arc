@@ -31,6 +31,10 @@ router.addDefaultHandler(async ({ page }) => {
   await page.type("input[name='pass']", PASSWORD)
   await page.click('input[type="submit"]')
 
+  await page.waitForNetworkIdle({
+    timeout: 50000,
+  })
+
   await page.waitForSelector('#searchInterface', {
     visible: true,
     timeout: 10000,
@@ -44,16 +48,23 @@ router.addDefaultHandler(async ({ page }) => {
     return cookie
   })
 
+  await page.click('div.submitButton')
+
+  await page.waitForNetworkIdle({
+    timeout: 50000,
+  })
+
+  await page.waitForSelector('div#resultsTableBackground', {
+    timeout: 50000,
+    visible: true,
+  })
+
   const currentUrl = page.url()
   const tokens = currentUrl.split('/')
 
   const requestId = tokens[tokens.length - 1]
 
-  await page.click('div.submitButton')
-
-  await page.waitForSelector('div#dbSelector', {
-    timeout: 10000,
-  })
+  console.info(`FOUND REQUEST ID ${requestId}`)
 
   await Dataset.pushData({
     cookie,
@@ -65,7 +76,7 @@ router.addDefaultHandler(async ({ page }) => {
 
 const crawler = new PuppeteerCrawler({
   requestHandler: router,
-  headless: true,
+  headless: false,
   proxyConfiguration: new ProxyConfiguration({
     proxyUrls: [PROXY_URL],
   }),
